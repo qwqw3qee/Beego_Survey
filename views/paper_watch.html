@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    {{template "header" .}}
+</head>
+
+<body>
+    {{template "nav" .}}
+
+    <div class="container">
+        <div class="panel panel-primary scores">
+            <div class="panel-body">
+                {{if eq .paper.Type 1}}您的得分：{{.record.Scores}}分{{else}} 答卷详情{{end}}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <h1 id="md-title" class="text-center">{{.paper.Title}}</h1>
+        <h6 id="md-subtitle" class="text-muted text-center">{{.paper.Subtitle}}</h6>
+        <h5 class="text-right">出题人：<img id="md-authorImg" src="/headimg/{{.paper.AuthorID.ID}}" class="img-circle"
+                alt="{{.paper.AuthorID.NickName}}" width="25px">
+            <label id="md-author">{{.paper.AuthorID.NickName}}</label></h5>
+        <h6>
+            创建时间: <label id="md-startDate">{{dateformat .paper.AddDate.Time "2006-01-02 15:04:05"}}</label>
+            开始时间: <label id="md-startDate">{{dateformat .paper.StartDate.Time "2006-01-02 15:04:05"}}</label>
+            结束时间: <label id="md-endDate">{{dateformat .paper.EndDate.Time "2006-01-02 15:04:05"}}</label>
+            {{if  gt .paper.TimeLimit 0}}
+            问卷时长: <label id="md-timelimit">{{.paper.TimeLimit}}分钟</label>
+            {{end}}
+        </h6>
+        <blockquote>
+            <p id="md-description">{{.paper.Description}}</p>
+        </blockquote>
+        <img src="/paper/img/{{.paper.PaperID}}" id="md-img" class="img-responsive" alt="Image">
+        <p>{{.paper.Remark}}</p>
+        <h5 class="page-header"></h5>
+    </div>
+
+
+
+    <div class="container">
+        {{range $index,$elem:=.questions}}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div style="float: left;">
+                        {{$elem.No}}.{{if eq $elem.Type 0}}单选{{else if eq $elem.Type 1}}多选{{else}}简答{{end}}</div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <p>{{$elem.Description}}</p>
+                <form class="answers">
+                    <input type="hidden" name="QuestionID" value={{$elem.QuestionID}}>
+                    <div class="form-group">
+                        {{if eq $elem.Type 0}}
+                        <div class="radio">
+                            {{range $i,$v:= $elem.OptionsInfo | split}}
+                            <p><label>
+                                    {{$i | addOne}}.{{$v}}
+                                </label></p>
+                            {{end}}
+                        </div>
+                        {{end}}
+                        {{if eq $elem.Type 1}}
+                        <div class="checkbox">
+                            {{range $i,$v:= $elem.OptionsInfo | split}}
+                            <p><label>
+                                    {{$i | addOne}}.{{$v}}
+                                </label></p>
+                            {{end}}
+                        </div>
+                        {{end}}
+                        {{if eq $elem.Type 2}}
+
+                        {{end}}
+
+                    </div>
+
+                </form>
+                <p>备注：{{$elem.Remark}}</p>
+                <p>{{  printResolution $.record  $elem  $.paper.Type | str2html  }}</p>
+            </div>
+        </div>
+        {{end}}
+        <a class="btn btn-primary" data-toggle="modal" href='/'>返回首页</a>
+        <h5 class="page-header"></h5>
+    </div>
+
+
+    {{template "footerJS" .}}
+    <script src="/static/vendor/stickUp/js/stickUp.min.js"></script>
+    <script type="text/javascript">
+        //initiating jQuery
+        jQuery(function ($) {
+            $(document).ready(function () {
+
+                $('.scores').stickUp({
+                    marginTop: 'auto',
+                });
+
+            });
+        });
+
+    </script>
+</body>
+
+</html>

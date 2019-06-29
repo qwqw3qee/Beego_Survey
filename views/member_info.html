@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    {{template "header" .}}
+    <link href="/static/vendor/bootstrapvalidator/css/bootstrapValidator.min.css" rel="stylesheet">
+</head>
+
+<body>
+    {{template "nav" .}}
+    <div class="container">
+        <div class="row">
+
+            {{template "memberNav" .}}
+            <div class="col-md-9">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {{.PageTitle}}
+                    </div>
+                    <div class="panel-body " style="background-color:rgba(230, 219, 219, 0.521)">
+                        <img src="/member/headimg" class="img-circle center-block img-thumbnail headimg"
+                            alt="喵喵喵～头像失踪鸟～" style="height:200px;">
+
+
+                        <h1 class="text-center nick" style="color:darkblue;">{{.user.NickName}}</h1>
+                        <button class="btn btn-primary " data-toggle="modal" data-target="#changeHeadImg">修改头像</button>
+                        <button class="btn btn-primary " data-toggle="modal" data-target="#changePwd">修改密码</button>
+                        <a class="btn btn-primary " href="/member/logout">退出登录</a>
+
+
+                        <div class="panel panel-info">
+                            <!-- Default panel contents -->
+                            <div class="panel-heading">个人信息</div>
+                            <div class="panel-body">
+                                <table class="table table-striped ">
+                                    <tr>
+                                        <th class="text-right">用户名：</th>
+                                        <td class="text-left">{{.user.UserName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-right">昵称：</th>
+                                        <td class="text-left"><label class="nick"
+                                                style="font-weight:normal; ">{{.user.NickName}}</label>&nbsp;<button
+                                                class="btn-link" data-toggle="modal" data-target="#changeNick"
+                                                rel="noopener noreferrer" style="border:0;cursor:pointer">修改</a>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="text-right">用户类型：</th>
+                                        <td class="text-left">{{if eq .user.UserType 0}}管理员{{else}}普通用户{{end}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-right">注册日期：</th>
+                                        <td class="text-left">
+                                            {{dateformat .user.RegisterTime.Time "2006-01-02 15:04:05"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-right">我发布的问卷数：</th>
+                                        <td class="text-left">{{.papers}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-right">我回答过的问卷数：</th>
+                                        <td class="text-left">{{.answers}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="changeHeadImg">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">请选择图片</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="file" name="pic" id="uploadInp" class="btn">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default back" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitHeadImg">提交更改</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal fade" id="changePwd">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="pwdForm" method="POST" action="" onkeypress="return event.keyCode != 13;">
+                        <div class="form-group">
+                            <label>原始密码</label>
+                            <input type="password" class="form-control" placeholder="请输入原始密码" name="oldPwd">
+                        </div>
+                        <div class="form-group">
+                            <label>新密码</label>
+                            <input type="password" class="form-control" placeholder="请输入新密码" name="newPwd1">
+                        </div>
+                        <div class="form-group">
+                            <label>确认密码</label>
+                            <input type="password" class="form-control" placeholder="请再次输入新密码" name="newPwd2">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="submitPwd" class="btn btn-primary">提交更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="changeNick">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">修改昵称</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="nickForm" method="POST" action="" onkeypress="return event.keyCode != 13;">
+                        <div class="form-group">
+                            <label>新昵称</label>
+                            <input class="form-control" placeholder="请输入新昵称" name="newNick">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="submitNick" class="btn btn-primary">提交更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{template "footerJS" .}}
+    <script src="/static/vendor/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+    <script>
+        $('#submitHeadImg').on('click', function () {
+            var formData = new FormData();
+            var file = $("#uploadInp")[0].files[0];
+            formData.append("file", file);
+            $.ajax({
+                url: "/member/upload/headimg",
+                type: 'POST',
+                data: formData,
+                // 告诉jQuery不要去处理发送的数据
+                processData: false,
+                // 告诉jQuery不要去设置Content-Type请求头
+                contentType: false,
+                beforeSend: function () {
+                    toastr.info("正在进行，请稍候");
+                    console.log("正在进行，请稍候");
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        $('#changeHeadImg').modal('hide');
+                        toastr.success(data.message);
+                        console.log(data);
+                        $("img.headimg").attr('src', '/member/headimg?' + Math.random());
+                        //$("img.headimg").load("/member/headimg?" + Math.random());
+                    }
+                    else {
+                        toastr.error(data.message);
+                        //alert(data.message);
+                        console.log(data);
+                    }
+                },
+                error: function (data) {
+                    toastr.error(data.message);
+                    //alert(data.message);
+                    console.log(data);
+                }
+            });
+        });
+
+
+        $(function () {
+
+            $('#pwdForm').bootstrapValidator({
+
+                submitButtons: '#submitPwd',
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    oldPwd: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不能为空'
+                            }
+                        }
+                    },
+                    newPwd1: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不能为空'
+                            },
+                            different: {  //比较
+                                field: 'oldPwd', //需要进行比较的input name值
+                                message: '新密码不能与旧密码相同'
+                            }
+                        }
+                    },
+                    newPwd2: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不能为空'
+                            },
+                            identical: {  //比较是否相同
+                                field: 'newPwd1',  //需要进行比较的input name值
+                                message: '两次密码不一致'
+                            },
+                            different: {  //比较
+                                field: 'oldPwd', //需要进行比较的input name值
+                                message: '新密码不能与旧密码相同'
+                            }
+
+                        }
+                    }
+                }
+            });
+            $('#nickForm').bootstrapValidator({
+
+                submitButtons: '#submitNick',
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    newNick: {
+                        message: '昵称验证失败',
+                        validators: {
+                            notEmpty: {
+                                message: '昵称不能为空'
+                            },
+                            regexp: {
+                                regexp: /^[^\s]+$/,
+                                message: '昵称不能有空格'
+                            },
+                            stringLength: {
+                                min: 2,
+                                max: 18,
+                                message: '昵称长度必须在2到18位之间'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        $('#submitPwd').on('click', function () {
+            $.ajax({
+                url: "/member/change_password",
+                type: 'POST',
+                data: $("#pwdForm").serialize(),
+                // 告诉jQuery不要去处理发送的数据
+                //processData: false,
+                // 告诉jQuery不要去设置Content-Type请求头
+                //contentType: false,
+                beforeSend: function () {
+                    //alert("正在进行，请稍候");
+                    // toastr.info("正在进行，请稍候");
+                    console.log("正在进行，请稍候");
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        $('#changePwd').modal('hide');
+                        toastr.success(data.message);
+                    }
+                    else {
+                        toastr.warning(data.message);
+                        //alert(data.message);
+                    }
+                    console.log(data);
+                },
+                error: function (data) {
+                    toastr.error(data.message);
+                    //alert(data.message);
+                    console.log(data);
+                }
+            });
+        });
+        $('#submitNick').on('click', function () {
+            $.ajax({
+                url: "/member/change_nickname",
+                type: 'POST',
+                data: $("#nickForm").serialize(),
+                // 告诉jQuery不要去处理发送的数据
+                //processData: false,
+                // 告诉jQuery不要去设置Content-Type请求头
+                //contentType: false,
+                beforeSend: function () {
+                    //alert("正在进行，请稍候");
+                    // toastr.info("正在进行，请稍候");
+                    console.log("正在进行，请稍候");
+                },
+                success: function (data) {
+                    if (data.code == 0) {
+                        $('#changeNick').modal('hide');
+                        toastr.success(data.message);
+                        $('.nick').html(data.data['nick'])
+                    }
+                    else {
+                        toastr.warning(data.message);
+                        //alert(data.message);
+                    }
+                    console.log(data);
+                },
+                error: function (data) {
+                    toastr.error(data.message);
+                    //alert(data.message);
+                    console.log(data);
+                }
+            });
+        });
+        $('.modal').on('hidden.bs.modal', function () {
+            $(':input', this).not(':button,:submit,:reset').val('').removeAttr('checked').removeAttr('checked');
+
+        });
+    </script>
+</body>
+
+</html>

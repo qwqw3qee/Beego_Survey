@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    {{template "header" .}}
+    <link rel="stylesheet" href="/static/vendor/bootstrap-table/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/static/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+</head>
+
+<body>
+
+    {{template "nav" .}}
+
+    <div class="container">
+
+        <div class="page-header">
+            <h1>发布问卷</h1>
+            <h6 class="text-muted">定制您自己的问卷～</h6>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">问卷信息</h3>
+            </div>
+            <div class="panel-body">
+                <form id="papers">
+                    <div class="form-group">
+                        <label class="col-md-1">问卷标题</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" name="Title" placeholder="请输入标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-1">副标题</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" name="Subtitle" placeholder="请输入副标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2"> 问卷类型</label>
+                        <div class="radio col-md-3">
+                            <label>
+                                <input type="radio" name="Type" id="paper-type-zero" value="0" checked
+                                    onchange="j_paper_type()">
+                                开放式问卷
+                            </label>
+                            <label>
+                                <input type="radio" name="Type" id="paper-type-one" value="1" onchange="j_paper_type()">
+                                带答案问卷
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2">问卷描述</label>
+                        <textarea class="form-control" name="Description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-1">开放日期</label>
+                        <div class="input-group date form_datetime col-md-3" data-date-format="dd MM yyyy - HH:ii:ss"
+                            data-link-field="dtp_input1">
+                            <input class="form-control" size="16" type="text" name="StartDate" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="dtp_input1" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-1">结束日期</label>
+                        <div class="input-group date form_datetime col-md-3" data-date-format="dd MM yyyy - HH:ii:ss"
+                            data-link-field="dtp_input2">
+                            <input class="form-control" size="16" type="text" name="EndDate" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="dtp_input2" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-1">时间限制</label>
+                        <div class="input-group col-md-3 jcounter">
+                            <input type="text" class="input-counter form-control " data-min="1" data-max="3600"
+                                data-default="30" name="TimeLimit">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-minus btn-subtract"
+                                    style="cursor:pointer"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-plus btn-add"
+                                    style="cursor:pointer"></span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2">备注</label>
+                        <textarea class="form-control" rows="3" name="Remark"></textarea>
+                    </div>
+
+                </form>
+                <div>
+                    <label class="col-md-1">封面图片</label>
+                    <div class=" col-md-3"><input type="file" id="paperImg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container ques-box">
+        <div class="panel panel-default ques-body">
+            <div class="panel-body">
+                <form class="questions">
+                    <div class="form-group form-inline ">
+                        <label>题号</label>
+                        <input type="number" class="form-control ques-no" name="No" value="1">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label>题型</label>
+                        <select class="form-control ques-type" name="Type" onchange="j_ques_type(this)">
+                            <option value="0" selected="selected">单选</option>
+                            <option value="1">多选</option>
+                            <option value="2">简答</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>题目描述</label>
+                        <textarea class="form-control ques-description" name="Description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group ques-option">
+                        <label>选项</label>
+                        <div class="radio">
+                            <input type="hidden" class="ques-option-num" name="OptionsNum" value="1">
+                            <div class="form-inline pp">
+                                <a>1</a>
+                                <label class="ques-type-label"><input type="radio" class="ques-type-input"
+                                        name="StandardNo" value="1">(是否为答案？)</label>
+                                <input type="text" class="form-control op" name="optionsInfo">
+                                <button type="button" class='btn addp '>+</button>
+                                <button type="button" class='btn delp'>-</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea class="form-control ques-remark" name="Remark" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group stan-scores">
+                        <label>分值</label>
+                        <input type="number" class="form-control" name="Scores" value="1">
+                    </div>
+                    <div class="form-group stan-text">
+                        <label>参考答案</label>
+                        <textarea class="form-control" name="StandText" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer">
+                <button type="button" class="btn btn-default ques-add">增加</button>
+                <button type="button" class="btn btn-danger ques-del">删除</button>
+            </div>
+        </div>
+
+        <a class="btn btn-primary" data-toggle="modal" href='#modal-submit'>发布问卷</a>
+        <h5 class="page-header"></h5>
+    </div>
+
+    <div class="modal fade" id="modal-submit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">确认提交</h4>
+                </div>
+                <div class="modal-body">
+                    问卷已准备就绪，是否提交？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">我再想想</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn">确认提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{template "footerJS" .}}
+    <script src="/static/vendor/bootstrap-table/js/bootstrap-table.min.js"></script>
+    <script src="/static/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/vendor/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="/static/vendor/bootstrap-table/js/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/static/vendor/bootstrap-table/js/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/static/vendor/jquery-input-counter/js/jquery.input-counter.min.js"></script>
+    <script src="//cdn.bootcss.com/eruda/1.5.2/eruda.min.js"></script>
+    <script>eruda.init();</script>
+    <script>
+        var i = 1, ques_num = 1, haveAns = false;
+        $(function () {
+            $(".ques-box").on('click', '.addp', function () {
+                //$('#pp').after($("#pp").clone());
+                var addP = $(this).parent().clone();
+                $(':input', addP).not(':button,:submit,:reset').val('').removeAttr('checked');
+                $(this).parent().after(addP);
+                var opNum = 0;
+                var root = $(this).parent().parent();
+                $(root).find('.pp').each(function (i, e) {
+                    opNum++;
+                    $(e).children('a').text(i + 1);
+                    $(e).children('.ques-type-label').children('.ques-type-input').val(i + 1);
+                })
+                $(root).children('.ques-option-num').val(opNum);
+                //console.log(opNum);
+                toastr.success("选项添加成功～");
+            });
+            $(".ques-box").on("click", '.delp', function () {
+                var root = $(this).parent().parent();
+                var opNum = $(root).children('.ques-option-num').val();
+                //console.log(opNum);
+                if (opNum == 1) {
+                    toastr.warning("就剩一个选项啦！");
+                    return;
+                }
+                $(this).parent().remove();
+                opNum = 0;
+                $(root).find('.pp').each(function (i, e) {
+                    opNum++;
+                    $(e).children('a').text(i + 1);
+                    $(e).children('.ques-type-label').children('.ques-type-input').val(i + 1);
+                })
+                $(root).children('.ques-option-num').val(opNum);
+                //console.log(opNum);
+                toastr.success("选项删除成功～");
+            });
+            $(".ques-box").on('click', '.ques-add', function () {
+                var root = $(this).parent().parent();
+                //$('#pp').after($("#pp").clone());
+                var addP = $(root).clone();
+                $(':input', addP).not(':button,:submit,:reset,select').val('').removeAttr('checked');
+                $(root).after(addP);
+
+                j_ques_type($(addP).find(".ques-type"));
+                ques_num = 0;
+                $('.ques-no').each(function (i, e) {
+                    ques_num++;
+                    $(e).val(i + 1);
+                });
+                var opNum = 0;
+                $(addP).find('.pp').each(function (i, e) {
+                    opNum++;
+                    $(e).children('a').text(i + 1);
+                    $(e).children('.ques-type-label').children('.ques-type-input').val(i + 1);
+                })
+                $(addP).children('.ques-option-num').val(opNum);
+                //console.log(opNum);
+                toastr.success("题目添加成功～");
+                $("html,body").animate({ scrollTop: $(addP).offset().top }, 1000);
+            });
+            $(".ques-box").on("click", '.ques-del', function () {
+                //console.log(ques_num);
+                if (ques_num == 1) {
+                    toastr.warning("就剩这一个题啦，不要再删啦～");
+                    return
+                }
+                $(this).parent().parent().remove();
+                ques_num = 0;
+                $('.ques-no').each(function (i, e) {
+                    ques_num++;
+                    $(e).val(i + 1);
+                })
+                toastr.success("题目删除成功～");
+            });
+        });
+        function j_paper_type() {
+            if ($("#paper-type-zero").is(":checked")) {
+                haveAns = false;
+                $(".ques-type-label").hide();
+            }
+            if ($("#paper-type-one").is(":checked")) {
+                haveAns = true;
+                $(".ques-type-label").show();
+            }
+            $(".ques-type").each(function (i, e) {
+                j_ques_type(e);
+            });
+            //console.log(haveAns);
+        }
+        function j_ques_type(me) {
+            var op = $(me).val();
+            //console.log(op);
+            var root = $(me).parent().parent();
+            if (haveAns) {
+                $(root).find(".stan-scores").show();
+                if (op == 0) {
+                    $(root).find(".stan-text").hide();
+
+                    $(root).find(".ques-option").show();
+                    $(root).find(".ques-type-input").attr("type", "radio");
+                }
+                else if (op == 1) {
+                    $(root).find(".stan-text").hide();
+                    $(root).find(".ques-option").show();
+                    $(root).find(".ques-type-input").attr("type", "checkbox");
+                }
+                else if (op == 2) {
+                    $(root).find(".ques-option").hide();
+                    $(root).find(".stan-text").show();
+                }
+            } else {
+                $(root).find(".stan-scores").hide();
+                if (op != 2) {
+                    $(root).find(".stan-text").hide();
+                    $(root).find(".ques-option").show();
+                } else {
+                    $(root).find(".stan-text").hide();
+                    $(root).find(".ques-option").hide();
+                }
+            }
+
+        }
+        $(function () {
+            j_paper_type();
+        });
+    </script>
+    <script type="text/javascript">
+        $(".jcounter").inputCounter({
+            settings: {
+
+                // check the valus is within the min and max values
+                checkValue: true,
+
+                // is read only?
+                isReadOnly: false
+
+            }
+        });
+        $('.form_datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:ss',
+            startDate: new Date(),
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1
+        });
+    </script>
+    <script>
+        /** 表单序列化成json字符串的方法  */
+        function formClass2JsonObj(formClass) {
+            var paramArray = [];
+            $(formClass).each(function (i, e) {
+                paramArray[i] = $(e).serializeArray();
+                //console.log(paramArray[i]);
+            });
+            /*请求参数转json对象*/
+
+            var jsonArray = [];
+            for (var i = 0; i < paramArray.length; i++) {
+                var jsonObj = {};
+                $(paramArray[i]).each(function () {
+                    if (jsonObj[this.name])
+                        jsonObj[this.name] += "#op%" + this.value;
+                    else
+                        jsonObj[this.name] = this.value;
+                });
+                jsonArray.push(jsonObj);
+            }
+            var jsonAll = {};
+            jsonAll["rows"] = jsonArray;
+            jsonAll["total"] = jsonArray.length;
+            console.log(jsonAll);
+            // json对象再转换成json字符串
+            return jsonAll;
+        }
+        /** 表单序列化成json字符串的方法  */
+        function formID2JsonString(formID) {
+            var paramArray = $(formID).serializeArray();
+            /*请求参数转json对象*/
+            var jsonObj = {};
+            $(paramArray).each(function () {
+                jsonObj[this.name] = this.value;
+            });
+            console.log(jsonObj);
+            // json对象再转换成json字符串
+            return JSON.stringify(jsonObj);
+        }
+        $(function () {
+            var successEvent = 0;
+            $("#saveBtn").on('click', function () {
+                var paperID = 0;
+                ajax1 = $.ajax({
+                    type: 'POST',
+                    url: "/paper/new/paper",
+                    data: formID2JsonString("#papers"),
+                    contentType: "application/json;charset=utf-8",
+                    success: function (data) {
+                        if (data.code == 0) {
+                            toastr.success(data.message);
+                            console.log(data);
+                            paperID = data.data;
+                            successEvent++;
+                            //$("img.headimg").load("/member/headimg?" + Math.random());
+                        }
+                        else {
+                            toastr.error(data.message);
+                            //alert(data.message);
+                            console.log(data);
+                        }
+                    },
+                    error: function (data) {
+                        toastr.error(data.message);
+                        //alert(data.message);
+                        console.log(data);
+                    }
+                });
+
+
+                $.when(ajax1).done(function () {
+                    var questionObj = formClass2JsonObj(".questions");
+                    questionObj["PaperID"] = paperID;
+                    ajax2 = $.ajax({
+                        type: 'POST',
+                        url: "/paper/new/questions",
+                        data: JSON.stringify(questionObj),
+                        contentType: "application/json;charset=utf-8",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                toastr.success(data.message);
+                                console.log(data);
+                                successEvent++;
+                                //$("img.headimg").load("/member/headimg?" + Math.random());
+                            }
+                            else {
+                                toastr.error(data.message);
+                                //alert(data.message);
+                                console.log(data);
+                            }
+                        },
+                        error: function (data) {
+                            toastr.error(data.message);
+                            //alert(data.message);
+                            console.log(data);
+                        }
+                    });
+                    var formData = new FormData();
+                    var file = $("#paperImg")[0].files[0];
+                    formData.append("file", file);
+                    formData.append("PaperID", paperID);
+                    ajax3 = $.ajax({
+                        url: "/paper/upload/paperimg",
+                        type: 'POST',
+                        data: formData,
+                        // 告诉jQuery不要去处理发送的数据
+                        processData: false,
+                        // 告诉jQuery不要去设置Content-Type请求头
+                        contentType: false,
+                        beforeSend: function () {
+                            //toastr.info("正在进行，请稍候");
+                            console.log("正在进行，请稍候");
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                //$('#changeHeadImg').modal('hide');
+                                toastr.success(data.message);
+                                console.log(data);
+                                successEvent++;
+                                //$("img.headimg").attr('src', '/member/headimg?' + Math.random());
+                                //$("img.headimg").load("/member/headimg?" + Math.random());
+                            }
+                            else {
+                                toastr.error(data.message);
+                                //alert(data.message);
+                                console.log(data);
+                            }
+                        },
+                        error: function (data) {
+                            toastr.error(data.message);
+                            //alert(data.message);
+                            console.log(data);
+                        }
+                    });
+                    $.when(ajax2, ajax3).done(function () {
+                        if (successEvent == 3) {
+                            alert("发布成功！点确定返回主页");
+                            window.location.replace("/");
+                        } else {
+                            toastr.error("提交出错！请检查问卷内容！");
+                            $("#modal-submit").modal('hide');
+                        }
+
+                    });
+
+                });
+            });
+        }); 
+    </script>
+</body>
+
+</html>

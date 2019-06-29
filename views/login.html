@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    {{template "header" .}}
+    <link href="/static/vendor/bootstrapvalidator/css/bootstrapValidator.min.css" rel="stylesheet">
+</head>
+
+<body>
+    {{template "nav" .}}
+
+
+    <div class="container" style="max-width: 500px;">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form method="POST" action="/login">
+                    <legend>登录</legend>
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input class="form-control" placeholder="请输入用户名" name="uname">
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" class="form-control" placeholder="请输入密码" name="pwd">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="autoLogin">自动登录
+                        </label>
+                    </div>
+                    <button type="submit" id="mySubmit" class="btn btn-primary">登录</button>
+                    <button type="button" class="btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{template "footerJS" .}}
+    <script src="/static/vendor/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+        $('form').bind('keydown', function (event) {
+            if (event.keyCode == "13") {
+                //回车执行查询
+                $('#mySubmit').click();
+            }
+        });
+        $(function () {
+
+            $('form').bootstrapValidator({
+
+                submitButtons: '#mySubmit',
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    uname: {
+                        message: '用户名验证失败',
+                        validators: {
+                            notEmpty: {
+                                message: '用户名不能为空'
+                            },
+                            stringLength: {
+                                min: 2,
+                                max: 18,
+                                message: '用户名长度必须在2到18位之间'
+                            },
+                            regexp: {
+                                regexp: /^[a-zA-Z0-9_]+$/,
+                                message: '用户名只能包含大写、小写、数字和下划线'
+                            }
+                        }
+                    },
+                    pwd: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不能为空'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
