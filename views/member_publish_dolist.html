@@ -90,8 +90,8 @@
                 formatter: idformatter
             },
             {
-                field: 'PaperID.AuthorID.NickName',
-                title: '作者',
+                field: 'AnswerUserID.NickName',
+                title: '答题人',
                 formatter: NickNameFormatter
             },
             {
@@ -185,7 +185,7 @@
             return result;
         }
         function NickNameFormatter(value, row, index) {
-            var result = '<img src="/headimg/' + row.PaperID.AuthorID.ID + '" class=" img-circle" alt="喵喵喵~" width="25px">' + row.PaperID.AuthorID.NickName
+            var result = '<img src="/headimg/' + row.AnswerUserID.ID + '" class=" img-circle" alt="喵喵喵~" width="25px">' + row.AnswerUserID.NickName
             return result;
         }
         function idformatter(value, row, index) {

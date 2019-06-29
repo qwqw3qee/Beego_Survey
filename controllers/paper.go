@@ -86,7 +86,7 @@ func (c *PaperController) PaperNewHandler() {
 		TimeLimit:   tempTimeLimit,
 		Remark:      paperJson.Remark,
 	}
-	beego.Info(paper)
+	//beego.Info(paper)
 	if _, err := models.CreatePaper(&paper); err != nil {
 		c.AjaxError("插入数据库出错", 2)
 	}
@@ -376,7 +376,7 @@ func (c *PaperController) PaperWatch() {
 		c.FlashError("未查到试卷")
 		c.RedirectTo(c.redirectURL)
 	}
-	if answerUserID != c.CurrentLoginUser.ID && answerUserID != paper.AuthorID.ID && c.CurrentLoginUser.UserType != 2 {
+	if answerUserID != c.CurrentLoginUser.ID && c.CurrentLoginUser.ID != paper.AuthorID.ID && c.CurrentLoginUser.UserType != 2 {
 		c.FlashError("您没有权限查看此问卷")
 		c.RedirectTo(c.redirectURL)
 	}
