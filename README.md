@@ -78,5 +78,8 @@
 cd ~/gowork/src/beego_survey
 go build -o beego_survey main.go
 ```
+
 3. 其他说明       
-数据库默认有两个账户`anonymous`和`admin`,密码均为`admin`，这两个用户暂时必须位于数据库的前两个条记录中。
+    * 数据库默认有两个账户`anonymous`和`admin`,密码均为`admin`，这两个用户暂时必须位于数据库的前两个条记录中。
+    * 关于手机访问：部分手机浏览器可能无法正常加载bootstrap-table，请下载最新版Chrome浏览器访问。
+
